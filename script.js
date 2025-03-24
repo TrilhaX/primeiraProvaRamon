@@ -5,6 +5,7 @@ const t = Math.random() * canvas.height
 const localSave = localStorage.setItem("MaxPontos", 0);
 
 let gameRunning = true
+let iniciandoGame = true
 let pontosQ = 0
 let maxpontosQ = 0
 
@@ -27,6 +28,7 @@ document.addEventListener('keydown', (e) => {
     }
     if (teclasPressionadas.hasOwnProperty(e.code)) {
         teclasPressionadas[e.code] = true;
+        iniciandoGame = false
     }
 });
 
@@ -81,6 +83,7 @@ class Cobra extends Entidade {
             this.#houveColisao(comida)
         }
     }
+
     #houveColisao(comida) {
         comida.x = Math.random() * canvas.width - 10
         comida.y = Math.random() * canvas.height - 10
@@ -105,6 +108,25 @@ class Cobra extends Entidade {
             Game.gameOver()
         }
     }
+
+    verificarColisaoConsigoMesma() {
+        if (!iniciandoGame) {
+            for (let i = 0; i < cobraCorpo.length; i++) {
+                const segment = cobraCorpo[i];
+                if (
+                    this.x === segment.x &&
+                    this.y === segment.y &&
+                    i !== cobraCorpo.length - 1 
+                ) {
+                    this.#houveColisaoConsigoMesma();
+                }
+            }
+        }
+    }
+
+    #houveColisaoConsigoMesma(){
+        Game.gameOver()
+    }
 }
 class Comida extends Entidade {
     constructor() {
@@ -119,8 +141,10 @@ const comida = new Comida()
 class Game {
     static gameOver() {
         if (gameRunning == false) {
+            gameRunning = false
             gameOverDiv.style.display = "flex"
             pontos.innerHTML = "Pontos: 0"
+            iniciandoGame = true
         }
     }
     
@@ -155,6 +179,7 @@ function loop() {
         cobra.atualizar()
         cobra.verificarColisao(comida)
         cobra.verificarBorda()
+        cobra.verificarColisaoConsigoMesma()
     }
     Game.reiniciar()
     requestAnimationFrame(loop)
