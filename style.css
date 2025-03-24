@@ -6,9 +6,29 @@
 body {
     background-color: black;
     display: flex;
+    flex-direction: column;
+    gap: 1rem;
     justify-content: center;
     align-items: center;
     height: 100vh;
+}
+
+.gameOverDiv{
+    display: none;
+    flex-direction: column;
+    text-align: center;
+    color: white;
+    gap: 1rem;
+}
+
+button{
+    padding: 1rem 2rem;
+    background-color: blue;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 10px;
 }
 
 canvas {
