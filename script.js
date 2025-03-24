@@ -24,6 +24,7 @@ document.addEventListener('keydown', (e) => {
     for (let tecla in teclasPressionadas) {
         if (teclasPressionadas.hasOwnProperty(e.code)) {
             teclasPressionadas[tecla] = false;
+            iniciandoGame = true
         }
     }
     if (teclasPressionadas.hasOwnProperty(e.code)) {
@@ -110,13 +111,14 @@ class Cobra extends Entidade {
     }
 
     verificarColisaoConsigoMesma() {
-        if (!iniciandoGame) {
-            for (let i = 0; i < cobraCorpo.length; i++) {
+        if (iniciandoGame == false) {
+            for (let i = 0; i < cobraCorpo.length - 1; i++) {
                 const segment = cobraCorpo[i];
                 if (
-                    this.x === segment.x &&
-                    this.y === segment.y &&
-                    i !== cobraCorpo.length - 1 
+                    this.x < segment.x + this.largura &&
+                    this.x + this.largura > segment.x &&
+                    this.y < segment.y + this.altura &&
+                    this.y + this.altura > segment.y
                 ) {
                     this.#houveColisaoConsigoMesma();
                 }
@@ -125,6 +127,7 @@ class Cobra extends Entidade {
     }
 
     #houveColisaoConsigoMesma(){
+        gameRunning = false
         Game.gameOver()
     }
 }
@@ -141,7 +144,6 @@ const comida = new Comida()
 class Game {
     static gameOver() {
         if (gameRunning == false) {
-            gameRunning = false
             gameOverDiv.style.display = "flex"
             pontos.innerHTML = "Pontos: 0"
             iniciandoGame = true
