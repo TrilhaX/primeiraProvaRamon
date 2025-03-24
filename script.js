@@ -8,7 +8,7 @@ let gameRunning = true
 let pontosQ = 0
 let maxpontosQ = 0
 
-const cobraCorpo = [];
+const cobraCorpo = []
 const pontos = document.querySelector("#pontosQ")
 const maxpontos = document.querySelector("#maxPontosQ")
 
@@ -58,7 +58,19 @@ class Cobra extends Entidade {
         } else if (teclasPressionadas.KeyD) {
             this.x += 7
         }
+        cobraCorpo.push({ x: this.x, y: this.y });
+        if (cobraCorpo.length > 10) {
+            cobraCorpo.shift();
+        }
     }
+
+    desenhar(cor) {
+        ctx.fillStyle = cor;
+        cobraCorpo.forEach((segment) => {
+            ctx.fillRect(segment.x, segment.y, this.largura, this.altura);
+        });
+    }
+
     verificarColisao(comida) {
         if (
             this.x < comida.x + comida.largura &&
@@ -79,6 +91,7 @@ class Cobra extends Entidade {
             maxpontos.innerHTML = "Max Pontos: " + maxpontosQ
             localStorage.setItem("MaxPontos", maxpontosQ);
         }
+        cobraCorpo.push({ x: this.x, y: this.y });
     }
 
     verificarBorda() {
@@ -89,7 +102,7 @@ class Cobra extends Entidade {
             this.y + this.altura > canvas.height
         ) {
             gameRunning = false;
-            gameOver()
+            Game.gameOver()
         }
     }
 }
@@ -103,27 +116,32 @@ class Comida extends Entidade {
 const cobra = new Cobra(100, 200, 20, 20)
 const comida = new Comida()
 
-function gameOver() {
-    if (gameRunning == false) {
-        gameOverDiv.style.display = "flex"
-        pontos.innerHTML = "Pontos: 0"
+class Game {
+    static gameOver() {
+        if (gameRunning == false) {
+            gameOverDiv.style.display = "flex"
+            pontos.innerHTML = "Pontos: 0"
+        }
     }
-}
-
-function reiniciar() {
-    if (gameRunning == false) {
-        document.addEventListener('keydown', (e) => {
-            if (e.code === 'KeyR') {
-                gameOverDiv.style.display = "none" 
-                gameRunning = true
-                pontosQ = 0
-                cobra.x = 100
-                cobra.y = 200
-                for (let tecla in teclasPressionadas) {
-                    teclasPressionadas[tecla] = false;
+    
+    static reiniciar() {
+        if (gameRunning == false) {
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'KeyR') {
+                    gameOverDiv.style.display = "none" 
+                    pontosQ = 0
+                    cobra.x = 100
+                    cobra.y = 200
+                    for (let tecla in teclasPressionadas) {
+                        teclasPressionadas[tecla] = false;
+                    }
+                    cobraCorpo.length = 0;
+                    comida.x = Math.random() * canvas.width - 10
+                    comida.y = t
+                    gameRunning = true
                 }
-            }
-        });
+            });
+        }
     }
 }
 
@@ -134,13 +152,11 @@ function loop() {
     cobra.desenhar('Green')
     comida.desenhar('Red')
     if (gameRunning == true) {
-        cobra.desenhar('Green')
         cobra.atualizar()
-        comida.desenhar('Red')
         cobra.verificarColisao(comida)
         cobra.verificarBorda()
     }
-    reiniciar()
+    Game.reiniciar()
     requestAnimationFrame(loop)
 }
 loop()
