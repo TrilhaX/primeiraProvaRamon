@@ -22,9 +22,23 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-function gameOver() {
-    if (gameRunning == false) {
-        gameOverDiv.style.display = "flex"
+class Game {
+    static gameOver() {
+        if (gameRunning == false) {
+            gameOverDiv.style.display = "flex"
+        }
+    }
+
+    static reiniciar() {
+        if (gameRunning == false) {
+            document.addEventListener('keydown', (e) => {
+                if (e.code === 'R') {
+                    if (gameRunning == false) {
+                        gameOverDiv.style.display = "flex"
+                    }
+                }
+            });
+        }
     }
 }
 
@@ -80,7 +94,7 @@ class Cobra extends Entidade {
             this.y + this.altura > canvas.height
         ) {
             gameRunning = false;
-            gameOver()
+            Game.gameOver()
         }
     }
 }

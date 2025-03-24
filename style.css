@@ -21,16 +21,6 @@ body {
     gap: 1rem;
 }
 
-button{
-    padding: 1rem 2rem;
-    background-color: blue;
-    color: white;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-    border-radius: 10px;
-}
-
 canvas {
     background-color: white;
     border: none;
